@@ -6,6 +6,7 @@ from dash.dependencies import Input, Output
 from plotly import graph_objs as go
 from plotly import express as px
 
+import flask
 import numpy as np
 import pandas as pd
 import plotly.express as px
@@ -31,6 +32,7 @@ df = px.data.gapminder()
 external_stylesheets = ['https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css']
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+server = app.server
 
 app.layout = html.Div(children=[
     html.H1(children='Hello Dash'),
