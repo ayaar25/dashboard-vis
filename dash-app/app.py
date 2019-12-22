@@ -11,8 +11,8 @@ import numpy as np
 import pandas as pd
 import plotly.express as px
 
-dataset_bar = pd.read_csv('../data/risk_factor.tsv', sep='\t')
-dataset_bubble = pd.read_csv('../data/bubble.tsv', sep='\t')
+dataset_bar = pd.read_csv('data/risk_factor.tsv', sep='\t')
+dataset_bubble = pd.read_csv('data/bubble.tsv', sep='\t')
 
 total_respondents = []
 for i in range(len(dataset_bubble)):
