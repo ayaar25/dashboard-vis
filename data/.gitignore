@@ -1,0 +1,4 @@
+# As the data used in this project may contain sensitive informations,
+# this folder will only serves as a placeholder and not to store the actual data.
+*
+!.gitignore
