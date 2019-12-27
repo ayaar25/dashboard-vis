@@ -304,7 +304,7 @@ def update_figure_g3(sex_clicked, age_clicked, father_tribe_clicked, mother_trib
         'data' : traces,
         'layout' : dict(
             title= 'Perbandingan Resiko Stroke berdasarkan ' + title_feature,
-            barmode= 'lines+markers',
+            mode= 'lines+markers',
             xaxis={'title': 'Resiko Stroke'},
             yaxis={'title':'Jumlah Responden'}
         )
