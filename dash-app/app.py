@@ -11,21 +11,21 @@ import numpy as np
 import pandas as pd
 import plotly.express as px
 
-dataset_bar = pd.read_csv('data/risk_factor.tsv', sep='\t')
-dataset_bubble = pd.read_csv('data/bubble.tsv', sep='\t')
-dataset_line = pd.read_csv('data/risk.tsv', sep='\t')
+df_risk_factor = pd.read_csv('data/risk_factor.tsv', sep='\t')
+df_bubble = pd.read_csv('data/bubble.tsv', sep='\t')
+df_risk = pd.read_csv('data/risk.tsv', sep='\t')
 
 total_respondents = []
-for i in range(len(dataset_bubble)):
-    total_respondents.append(dataset_bubble['non_stroke'][i]+dataset_bubble['stroke'][i])
+for i in range(len(df_bubble)):
+    total_respondents.append(df_bubble['non_stroke'][i]+df_bubble['stroke'][i])
 
 colors = []
-for i in range(len(dataset_bubble)):
+for i in range(len(df_bubble)):
     colors.append('rgb'+ str((np.random.randint(0,256), np.random.randint(0,256), np.random.randint(0,256))))
 
-dataset_bubble['total_respondents'] = total_respondents
-dataset_bubble['color'] = colors
-dataset_bubble['importance'] = dataset_bubble['importance'].apply(lambda x: x*10)
+df_bubble['total_respondents'] = total_respondents
+df_bubble['color'] = colors
+df_bubble['importance'] = df_bubble['importance'].apply(lambda x: x*10)
 
 external_stylesheets = ['https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css']
 
@@ -121,13 +121,13 @@ app.layout = html.Div(
                                     figure={
                                         'data' : [
                                             go.Scatter(
-                                                x = dataset_bubble['total_respondents'],
-                                                y = dataset_bubble['stroke'],
-                                                text = dataset_bubble['jenis'],
+                                                x = df_bubble['total_respondents'],
+                                                y = df_bubble['stroke'],
+                                                text = df_bubble['jenis'],
                                                 mode = 'markers',
                                                 marker = {
-                                                    'color' : dataset_bubble['color'],
-                                                    'size'  : dataset_bubble['importance']
+                                                    'color' : df_bubble['color'],
+                                                    'size'  : df_bubble['importance']
                                                 }
                                             )
                                         ],
@@ -175,6 +175,27 @@ app.layout = html.Div(
             ]
         ),
         html.Br(),
+
+        # html.Div(
+        #     className="container-fluid",
+        #     children=[
+        #         html.Div(
+        #             className="card",
+        #             children=[
+        #                 html.Div(
+        #                     className="card-header"
+        #                 ),
+        #                 html.Div(
+        #                     className="card-body",
+        #                     children=[
+        #                         dcc.Graph(id='line-graph4'),
+        #                     ]
+        #                 )
+        #             ]
+        #         ),
+        #     ]
+        # ),
+        # html.Br()
     ]
 )
 
@@ -235,7 +256,7 @@ def update_figure_g1(selected_var, sex_clicked, risk_clicked, age_clicked, fathe
         col = 'suku_ibu'
         title_feature = "Suku Ibu"
 
-    df_fitur = pd.DataFrame({'count': dataset_bar.groupby([col, "tahap"]).size()}).reset_index()
+    df_fitur = pd.DataFrame({'count': df_risk_factor.groupby([col, "tahap"]).size()}).reset_index()
 
     for var in selected_var:
         traces.append(go.Bar(name=var, x=df_fitur.loc[df_fitur['tahap']==int(var)][col].tolist(), y=df_fitur.loc[df_fitur['tahap']==int(var)]['count'].tolist()))
@@ -297,7 +318,7 @@ def update_figure_g3(sex_clicked, age_clicked, father_tribe_clicked, mother_trib
         title_feature = "Suku Ibu"
 
     for col in cols:
-        df_fitur = pd.DataFrame({'count': dataset_line.groupby([col, "Risk"]).size()}).reset_index()
+        df_fitur = pd.DataFrame({'count': df_risk.groupby([col, "Risk"]).size()}).reset_index()
         traces.append(go.Scatter(name=col, x=df_fitur.loc[df_fitur[col]==True]["Risk"].tolist(), y=df_fitur.loc[df_fitur[col]==True]['count'].tolist()))
     
     return {
