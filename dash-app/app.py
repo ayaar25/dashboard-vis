@@ -14,6 +14,7 @@ import plotly.express as px
 df_risk_factor = pd.read_csv('data/risk_factor.tsv', sep='\t')
 df_bubble = pd.read_csv('data/bubble.tsv', sep='\t')
 df_risk = pd.read_csv('data/risk.tsv', sep='\t')
+df_line = pd.read_csv('data/line.tsv', sep='\t')
 
 total_respondents = []
 for i in range(len(df_bubble)):
@@ -32,7 +33,31 @@ external_stylesheets = ['https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 server = app.server
 
-app.layout = html.Div(
+
+def update_figure_g4():
+    traces = []
+    x_label = ["2011", "2012", "2015", "2019"]
+    for _, row in df_line.iterrows():
+        traces.append(
+            go.Scatter(
+                name=row["JK"],
+                x=x_label,
+                y=row.values[1:]
+            )
+        )
+
+    return {
+        "data": traces,
+        "layout": dict(
+            title="Jumlah Penderita Stroke per Tahun",
+            mode="lines",
+            xaxis={"title": "Tahun"},
+            yaxis={"title": "Jumlah Responden"}
+        )
+    }
+
+
+app.layout = lambda : html.Div(
     className="container-fluid",
     children=[
         html.Div(
@@ -176,26 +201,29 @@ app.layout = html.Div(
         ),
         html.Br(),
 
-        # html.Div(
-        #     className="container-fluid",
-        #     children=[
-        #         html.Div(
-        #             className="card",
-        #             children=[
-        #                 html.Div(
-        #                     className="card-header"
-        #                 ),
-        #                 html.Div(
-        #                     className="card-body",
-        #                     children=[
-        #                         dcc.Graph(id='line-graph4'),
-        #                     ]
-        #                 )
-        #             ]
-        #         ),
-        #     ]
-        # ),
-        # html.Br()
+        html.Div(
+            className="container-fluid",
+            children=[
+                html.Div(
+                    className="card",
+                    children=[
+                        html.Div(
+                            className="card-header"
+                        ),
+                        html.Div(
+                            className="card-body",
+                            children=[
+                                dcc.Graph(
+                                    id='line-graph4',
+                                    figure=update_figure_g4()
+                                )
+                            ]
+                        )
+                    ]
+                ),
+            ]
+        ),
+        html.Br()
     ]
 )
 
@@ -334,5 +362,3 @@ def update_figure_g3(sex_clicked, age_clicked, father_tribe_clicked, mother_trib
 
 if __name__ == '__main__':
     app.run_server(debug=True)
-
-
