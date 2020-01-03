@@ -49,10 +49,10 @@ def update_figure_g4():
     return {
         "data": traces,
         "layout": dict(
-            title="Jumlah Penderita Stroke per Tahun",
+            title="Jumlah Insiden Stroke per Tahun",
             mode="lines",
             xaxis={"title": "Tahun"},
-            yaxis={"title": "Jumlah Responden"}
+            yaxis={"title": "Jumlah Insiden"}
         )
     }
 
