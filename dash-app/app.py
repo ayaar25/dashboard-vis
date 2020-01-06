@@ -188,9 +188,7 @@ app.layout = lambda : html.Div(
                                     className="btn-group d-flex",
                                     children=[
                                         html.Button('Jenis Kelamin', className="border border-secondary btn btn-light", id='g3-sex-button'),
-                                        html.Button('Umur', className="border border-secondary btn btn-light", id='g3-age-button'),
-                                        html.Button('Suku Ayah', className="border border-secondary btn btn-light", id='g3-father-tribe-button'),
-                                        html.Button('Suku Ibu', className="border border-secondary btn btn-light", id='g3-mother-tribe-button')
+                                        html.Button('Umur', className="border border-secondary btn btn-light", id='g3-age-button')
                                     ]
                                 ),
                             ]
@@ -302,12 +300,10 @@ def update_figure_g1(selected_var, sex_clicked, risk_clicked, age_clicked, fathe
 @app.callback(
     Output(component_id='line-graph3', component_property='figure'),
     [Input(component_id='g3-sex-button', component_property='n_clicks_timestamp'),
-    Input(component_id='g3-age-button', component_property='n_clicks_timestamp'),
-    Input(component_id='g3-father-tribe-button', component_property='n_clicks_timestamp'),
-    Input(component_id='g3-mother-tribe-button', component_property='n_clicks_timestamp')],
+    Input(component_id='g3-age-button', component_property='n_clicks_timestamp')],
 )
-def update_figure_g3(sex_clicked, age_clicked, father_tribe_clicked, mother_tribe_clicked):
-    buttons = [0, 0, 0, 0, 0]
+def update_figure_g3(sex_clicked, age_clicked):
+    buttons = [0, 0]
     traces = []
     cols = ["Umur <35", "Umur 35-44", "Umur 45-54", "Umur >55"]
     title_feature = "Umur"
@@ -322,28 +318,12 @@ def update_figure_g3(sex_clicked, age_clicked, father_tribe_clicked, mother_trib
     else :
         buttons[1] = age_clicked
     
-    if father_tribe_clicked == None:
-        buttons[2] = 0
-    else :
-        buttons[2] = father_tribe_clicked
-    
-    if mother_tribe_clicked == None:
-        buttons[3] = 0
-    else :
-        buttons[3] = mother_tribe_clicked
-    
     if buttons.index(max(buttons)) == 0:
         cols = ["Pria", "Wanita"]
         title_feature = "Jenis Kelamin"
     elif buttons.index(max(buttons)) == 1:
         cols = ["Umur <35", "Umur 35-44", "Umur 45-54", "Umur >55"]
         title_feature = "Umur"
-    elif buttons.index(max(buttons)) == 2:
-        cols = ["Ayah bersuku sunda", "Ayah bersuku jawa", "Ayah bersuku betawi", "Ayah bersuku lainnya"]
-        title_feature = "Suku Ayah"
-    else:
-        cols = ["Ibu bersuku sunda", "Ibu bersuku jawa", "Ibu bersuku betawi", "Ibu bersuku lainnya"]
-        title_feature = "Suku Ibu"
 
     for col in cols:
         df_fitur = pd.DataFrame({'count': df_risk.groupby([col, "Risk"]).size()}).reset_index()
