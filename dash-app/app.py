@@ -90,9 +90,7 @@ app.layout = lambda : html.Div(
                                             children=[
                                                 html.Button('Jenis Kelamin', className="border border-secondary btn btn-light", id='g1-sex-button'),
                                                 html.Button('Faktor Resiko', className="border border-secondary btn btn-light", id='g1-risk-factor-button'),
-                                                html.Button('Umur', className="border border-secondary btn btn-light", id='g1-age-button'),
-                                                html.Button('Suku Ayah', className="border border-secondary btn btn-light", id='g1-father-tribe-button'),
-                                                html.Button('Suku Ibu', className="border border-secondary btn btn-light", id='g1-mother-tribe-button')
+                                                html.Button('Umur', className="border border-secondary btn btn-light", id='g1-age-button')
                                             ]
                                         ),
                                     ]
@@ -231,12 +229,10 @@ app.layout = lambda : html.Div(
     [Input(component_id='g1-var-checkboxes', component_property='value'),
     Input(component_id='g1-sex-button', component_property='n_clicks_timestamp'),
     Input(component_id='g1-risk-factor-button', component_property='n_clicks_timestamp'),
-    Input(component_id='g1-age-button', component_property='n_clicks_timestamp'),
-    Input(component_id='g1-father-tribe-button', component_property='n_clicks_timestamp'),
-    Input(component_id='g1-mother-tribe-button', component_property='n_clicks_timestamp')],
+    Input(component_id='g1-age-button', component_property='n_clicks_timestamp')],
 )
-def update_figure_g1(selected_var, sex_clicked, risk_clicked, age_clicked, father_tribe_clicked, mother_tribe_clicked):
-    buttons = [0, 0, 0, 0, 0]
+def update_figure_g1(selected_var, sex_clicked, risk_clicked, age_clicked):
+    buttons = [0, 0, 0]
     traces = []
     col = "umur"
     title_feature = "Umur"
@@ -256,16 +252,6 @@ def update_figure_g1(selected_var, sex_clicked, risk_clicked, age_clicked, fathe
     else :
         buttons[2] = age_clicked
     
-    if father_tribe_clicked == None:
-        buttons[3] = 0
-    else :
-        buttons[3] = father_tribe_clicked
-    
-    if mother_tribe_clicked == None:
-        buttons[4] = 0
-    else :
-        buttons[4] = mother_tribe_clicked
-    
     if buttons.index(max(buttons)) == 0:
         col = 'jenis_kelamin'
         title_feature = "Jenis Kelamin"
@@ -275,12 +261,6 @@ def update_figure_g1(selected_var, sex_clicked, risk_clicked, age_clicked, fathe
     elif buttons.index(max(buttons)) == 2:
         col = 'umur'
         title_feature = "Umur"
-    elif buttons.index(max(buttons)) == 3:
-        col = 'suku_ayah'
-        title_feature = "Suku Ayah"
-    else:
-        col = 'suku_ibu'
-        title_feature = "Suku Ibu"
 
     df_fitur = pd.DataFrame({'count': df_risk_factor.groupby([col, "tahap"]).size()}).reset_index()
 
