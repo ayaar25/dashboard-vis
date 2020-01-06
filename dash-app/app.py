@@ -21,8 +21,17 @@ for i in range(len(df_bubble)):
     total_respondents.append(df_bubble['non_stroke'][i]+df_bubble['stroke'][i])
 
 colors = []
-for i in range(len(df_bubble)):
-    colors.append('rgb'+ str((np.random.randint(0,256), np.random.randint(0,256), np.random.randint(0,256))))
+for _, row in df_bubble.iterrows():
+    if row["kategori"] == "behaviour":
+        colors.append("#fcdf05")
+    elif row["kategori"] == "metabolic":
+        colors.append("#0521fc")
+    elif row["kategori"] == "genetic":
+        colors.append("#21fc05")
+    elif row["kategori"] == "other":
+        colors.append("#df05fc")
+    else:
+        colors.append("#000000")
 
 df_bubble['total_respondents'] = total_respondents
 df_bubble['color'] = colors
