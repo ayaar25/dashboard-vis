@@ -42,30 +42,6 @@ external_stylesheets = ['https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 server = app.server
 
-
-def update_figure_g4():
-    traces = []
-    x_label = ["2011", "2012", "2015", "2019"]
-    for _, row in df_line.iterrows():
-        traces.append(
-            go.Scatter(
-                name=row["JK"],
-                x=x_label,
-                y=row.values[1:]
-            )
-        )
-
-    return {
-        "data": traces,
-        "layout": dict(
-            title="Jumlah Insiden Stroke per Tahun",
-            mode="lines",
-            xaxis={"title": "Tahun"},
-            yaxis={"title": "Jumlah Insiden"}
-        )
-    }
-
-
 app.layout = lambda : html.Div(
     className="container-fluid",
     children=[
@@ -204,30 +180,6 @@ app.layout = lambda : html.Div(
                 ),
             ]
         ),
-        html.Br(),
-
-        html.Div(
-            className="container-fluid",
-            children=[
-                html.Div(
-                    className="card",
-                    children=[
-                        html.Div(
-                            className="card-header"
-                        ),
-                        html.Div(
-                            className="card-body",
-                            children=[
-                                dcc.Graph(
-                                    id='line-graph4',
-                                    figure=update_figure_g4()
-                                )
-                            ]
-                        )
-                    ]
-                ),
-            ]
-        ),
         html.Br()
     ]
 )
@@ -316,13 +268,13 @@ def update_figure_g3(sex_clicked, age_clicked):
 
     for col in cols:
         df_fitur = pd.DataFrame({'count': df_risk.groupby([col, "Risk"]).size()}).reset_index()
-        traces.append(go.Scatter(name=col, x=df_fitur.loc[df_fitur[col]==True]["Risk"].tolist(), y=df_fitur.loc[df_fitur[col]==True]['count'].tolist()))
+        traces.append(go.Scatter(name=col, x=df_fitur.loc[df_fitur[col]==True]["Risk"].tolist(), y=df_fitur.loc[df_fitur[col]==True]['count'].tolist(), marker=dict(opacity=0)))
     
     return {
         'data' : traces,
         'layout' : dict(
             title= 'Perbandingan Resiko Stroke berdasarkan ' + title_feature,
-            mode= 'lines+markers',
+            mode= 'lines',
             xaxis={'title': 'Resiko Stroke'},
             yaxis={'title':'Jumlah Responden'}
         )
