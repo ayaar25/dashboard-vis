@@ -15,6 +15,7 @@ df_risk_factor = pd.read_csv('data/risk_factor.tsv', sep='\t')
 df_bubble = pd.read_csv('data/bubble.tsv', sep='\t')
 df_risk = pd.read_csv('data/risk.tsv', sep='\t')
 df_line = pd.read_csv('data/line.tsv', sep='\t')
+df_category = pd.read_csv('data/category.tsv', sep='\t')
 
 total_respondents = []
 for i in range(len(df_bubble)):
@@ -171,7 +172,8 @@ app.layout = lambda : html.Div(
                                     className="btn-group d-flex",
                                     children=[
                                         html.Button('Jenis Kelamin', className="border border-secondary btn btn-light", id='g3-sex-button'),
-                                        html.Button('Umur', className="border border-secondary btn btn-light", id='g3-age-button')
+                                        html.Button('Umur', className="border border-secondary btn btn-light", id='g3-age-button'),
+                                        html.Button('Faktor Resiko', className="border border-secondary btn btn-light", id='g3-factor-button')
                                     ]
                                 ),
                             ]
@@ -241,10 +243,11 @@ def update_figure_g1(selected_var, sex_clicked, risk_clicked, age_clicked):
 @app.callback(
     Output(component_id='line-graph3', component_property='figure'),
     [Input(component_id='g3-sex-button', component_property='n_clicks_timestamp'),
-    Input(component_id='g3-age-button', component_property='n_clicks_timestamp')],
+    Input(component_id='g3-age-button', component_property='n_clicks_timestamp'),
+    Input(component_id='g3-factor-button', component_property='n_clicks_timestamp')],
 )
-def update_figure_g3(sex_clicked, age_clicked):
-    buttons = [0, 0]
+def update_figure_g3(sex_clicked, age_clicked, factor_clicked):
+    buttons = [0, 0, 0]
     traces = []
     cols = ["Umur <35", "Umur 35-44", "Umur 45-54", "Umur >55"]
     title_feature = "Umur"
@@ -258,16 +261,27 @@ def update_figure_g3(sex_clicked, age_clicked):
         buttons[1] = 0
     else :
         buttons[1] = age_clicked
-    
+
+    if factor_clicked == None:
+        buttons[2] = 0
+    else :
+        buttons[2] = factor_clicked
+
     if buttons.index(max(buttons)) == 0:
         cols = ["Pria", "Wanita"]
         title_feature = "Jenis Kelamin"
+        df = df_risk       
     elif buttons.index(max(buttons)) == 1:
         cols = ["Umur <35", "Umur 35-44", "Umur 45-54", "Umur >55"]
         title_feature = "Umur"
+        df = df_risk       
+    elif buttons.index(max(buttons)) == 2:
+        cols = ["metabolic", "behaviour"]
+        title_feature = "Faktor Resiko"
+        df = df_category
 
     for col in cols:
-        df_fitur = pd.DataFrame({'count': df_risk.groupby([col, "Risk"]).size()}).reset_index()
+        df_fitur = pd.DataFrame({'count': df.groupby([col, "Risk"]).size()}).reset_index()
         traces.append(go.Scatter(name=col, x=df_fitur.loc[df_fitur[col]==True]["Risk"].tolist(), y=df_fitur.loc[df_fitur[col]==True]['count'].tolist(), marker=dict(opacity=0)))
     
     return {
